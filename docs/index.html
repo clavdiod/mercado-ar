@@ -1,8 +1,3 @@
-bash
-
-cat /home/claude/mercado-ar/docs/index.html
-Salida
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -28,17 +23,17 @@ Salida
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
-
+ 
 /* NAV */
 nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;}
 .logo{font-size:18px;font-weight:700;letter-spacing:-.5px;}
 .logo span{color:var(--accent);}
 .nav-meta{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;}
 .nav-meta strong{color:var(--accent2);display:block;font-size:13px;}
-
+ 
 /* LAYOUT */
 .main{max-width:1280px;margin:0 auto;padding:32px 24px;}
-
+ 
 /* HERO STATS */
 .hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:32px;}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
@@ -48,23 +43,23 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:16px 3
 .up{color:var(--accent2);}
 .down{color:var(--warn);}
 .neutral{color:var(--muted);}
-
+ 
 /* PANEL PRINCIPAL */
 .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:28px;}
 .panel-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;}
 .panel-title{font-size:15px;font-weight:700;}
 .panel-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-
+ 
 /* TABS */
 .tabs{display:flex;gap:4px;flex-wrap:wrap;}
 .tab{padding:5px 13px;font-size:12px;font-family:var(--sans);border:1px solid var(--border);border-radius:8px;cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;}
 .tab:hover{border-color:rgba(59,130,246,.4);color:var(--text);}
 .tab.active{background:rgba(59,130,246,.15);border-color:var(--accent);color:var(--accent);}
-
+ 
 /* DATE PICKER */
 select,input[type=text]{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:var(--sans);font-size:12px;padding:5px 10px;border-radius:8px;outline:none;cursor:pointer;}
 select:focus,input[type=text]:focus{border-color:var(--accent);}
-
+ 
 /* TABLE */
 .table-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:13px;}
@@ -90,14 +85,14 @@ td{padding:9px 14px;white-space:nowrap;}
 .t-vol{font-family:var(--mono);font-size:12px;color:var(--muted);}
 .spark-btn{font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:var(--sans);}
 .spark-btn:hover{border-color:var(--accent);color:var(--accent);}
-
+ 
 /* PAGINATION */
 .pagination{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
 .pagination-btns{display:flex;gap:6px;}
 .pagination-btns button{padding:4px 12px;font-size:12px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text);cursor:pointer;font-family:var(--sans);}
 .pagination-btns button:disabled{opacity:.3;cursor:default;}
 .pagination-btns button:not(:disabled):hover{border-color:var(--accent);color:var(--accent);}
-
+ 
 /* CHART MODAL */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;}
 .modal-bg.open{display:flex;}
@@ -108,7 +103,7 @@ td{padding:9px 14px;white-space:nowrap;}
 .close-btn{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;}
 .close-btn:hover{color:var(--text);}
 .chart-wrap{position:relative;height:280px;}
-
+ 
 /* STATUS */
 .status{font-size:12px;font-family:var(--mono);color:var(--muted);padding:8px 12px;display:flex;align-items:center;gap:8px;}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
@@ -116,21 +111,21 @@ td{padding:9px 14px;white-space:nowrap;}
 .dot-loading{background:#f59e0b;animation:pulse 1s infinite;}
 .dot-err{background:var(--warn);}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
+ 
 /* EMPTY / LOADING */
 .empty-row td{text-align:center;padding:40px;color:var(--muted);font-size:13px;}
-
+ 
 /* HISTORICO SELECTOR */
 .date-list{display:flex;gap:6px;flex-wrap:wrap;padding:16px 20px;border-bottom:1px solid var(--border);}
 .date-pill{padding:4px 10px;font-size:11px;font-family:var(--mono);border:1px solid var(--border);border-radius:99px;cursor:pointer;background:transparent;color:var(--muted);transition:all .15s;}
 .date-pill:hover{border-color:var(--accent);color:var(--accent);}
 .date-pill.active{background:rgba(59,130,246,.2);border-color:var(--accent);color:var(--accent);}
-
+ 
 footer{text-align:center;padding:32px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);margin-top:24px;}
 </style>
 </head>
 <body>
-
+ 
 <nav>
   <div class="logo">mercado<span>AR</span></div>
   <div class="nav-meta">
@@ -138,9 +133,9 @@ footer{text-align:center;padding:32px;font-size:11px;color:var(--muted);border-t
     <span>precios de cierre</span>
   </div>
 </nav>
-
+ 
 <div class="main">
-
+ 
   <!-- HERO STATS -->
   <div class="hero-stats" id="hero-stats">
     <div class="stat-card"><div class="stat-label">Instrumentos</div><div class="stat-value" id="s-total">—</div><div class="stat-sub">en la última fecha</div></div>
@@ -150,7 +145,7 @@ footer{text-align:center;padding:32px;font-size:11px;color:var(--muted);border-t
     <div class="stat-card"><div class="stat-label">FCI</div><div class="stat-value" id="s-fci">—</div><div class="stat-sub">fondos</div></div>
     <div class="stat-card"><div class="stat-label">Fechas</div><div class="stat-value" id="s-fechas">—</div><div class="stat-sub">en el histórico</div></div>
   </div>
-
+ 
   <!-- PANEL TABLA -->
   <div class="panel">
     <div class="panel-header">
@@ -201,9 +196,9 @@ footer{text-align:center;padding:32px;font-size:11px;color:var(--muted);border-t
       </div>
     </div>
   </div>
-
+ 
 </div><!-- /main -->
-
+ 
 <!-- MODAL GRÁFICO -->
 <div class="modal-bg" id="modal" onclick="closeModal(event)">
   <div class="modal">
@@ -218,34 +213,34 @@ footer{text-align:center;padding:32px;font-size:11px;color:var(--muted);border-t
     <div id="modal-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;"></div>
   </div>
 </div>
-
+ 
 <footer>mercadoAR · datos públicos de <a href="https://bolsar.info" style="color:var(--accent);text-decoration:none;">Bolsar</a> y <a href="https://cafci.org.ar" style="color:var(--accent);text-decoration:none;">CAFCI</a> · actualización automática días hábiles</footer>
-
+ 
 <script>
 const PAGE = 20;
 let allData = [], filtered = [], sortCol = 'cierre', sortDir = -1, page = 0, cat = '';
 let historico = {};   // { "2025-05-13": [{...},...], ... }
 let fechas = [];
 let chartInst = null;
-
+ 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 async function init() {
   setStatus('loading','Cargando índice de fechas...');
   try {
-    const res = await fetch('../data/resumen.json?t=' + Date.now());
+    const res = await fetch('data/resumen.json?t=' + Date.now());
     if (!res.ok) throw new Error('resumen.json no encontrado');
     const resumen = await res.json();
     fechas = resumen.fechas || [];
     document.getElementById('s-fechas').textContent = fechas.length;
     document.getElementById('nav-fecha').textContent = resumen.ultima_fecha || '—';
-
+ 
     const sel = document.getElementById('date-select');
     [...fechas].reverse().forEach(f => {
       const opt = document.createElement('option');
       opt.value = f; opt.textContent = formatDate(f);
       sel.appendChild(opt);
     });
-
+ 
     if (resumen.ultima_fecha) loadDate(resumen.ultima_fecha);
     else setStatus('err','No hay datos aún. El workflow aún no corrió.');
   } catch(e) {
@@ -254,13 +249,13 @@ async function init() {
     renderTable();
   }
 }
-
+ 
 async function loadDate(dateStr) {
   if (!dateStr) return;
   if (historico[dateStr]) { useData(dateStr); return; }
   setStatus('loading', 'Cargando ' + formatDate(dateStr) + '...');
   try {
-    const res = await fetch('../data/historico/' + dateStr + '.json?t=' + Date.now());
+    const res = await fetch('data/historico/' + dateStr + '.json?t=' + Date.now());
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const json = await res.json();
     historico[dateStr] = json.instrumentos || [];
@@ -269,12 +264,12 @@ async function loadDate(dateStr) {
     setStatus('err','Error: ' + e.message);
   }
 }
-
+ 
 function useData(dateStr) {
   allData = historico[dateStr] || [];
   document.getElementById('nav-fecha').textContent = dateStr;
   document.getElementById('date-select').value = dateStr;
-
+ 
   const cats = { acciones:0, cedears:0, bonos:0, fci:0, on:0, letras:0 };
   allData.forEach(i => { if (cats[i.categoria] !== undefined) cats[i.categoria]++; });
   document.getElementById('s-total').textContent   = allData.length.toLocaleString('es-AR');
@@ -282,11 +277,11 @@ function useData(dateStr) {
   document.getElementById('s-ced').textContent     = cats.cedears;
   document.getElementById('s-bon').textContent     = cats.bonos;
   document.getElementById('s-fci').textContent     = cats.fci;
-
+ 
   applyFilters();
   setStatus('ok', allData.length + ' instrumentos · cierre ' + formatDate(dateStr));
 }
-
+ 
 function applyFilters() {
   const q = document.getElementById('search').value.toLowerCase().trim();
   filtered = allData.filter(i =>
@@ -304,7 +299,7 @@ function applyFilters() {
   page = 0;
   renderTable();
 }
-
+ 
 function renderTable() {
   const tbody = document.getElementById('tbody');
   if (!filtered.length) {
@@ -333,7 +328,7 @@ function renderTable() {
   }).join('');
   updatePagination();
 }
-
+ 
 function updatePagination() {
   const total = filtered.length;
   const totalPages = Math.ceil(total / PAGE);
@@ -343,7 +338,7 @@ function updatePagination() {
   document.getElementById('btn-prev').disabled = page === 0;
   document.getElementById('btn-next').disabled = page >= totalPages - 1;
 }
-
+ 
 // ── EVENTS ────────────────────────────────────────────────────────────────────
 function setTab(el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -360,7 +355,7 @@ function sortBy(col) {
   if (th) th.classList.add(sortDir > 0 ? 'sort-asc' : 'sort-desc');
   applyFilters();
 }
-
+ 
 // ── CHART ─────────────────────────────────────────────────────────────────────
 async function openChart(ticker, nombre) {
   // cargar todas las fechas que no estén cargadas
@@ -370,7 +365,7 @@ async function openChart(ticker, nombre) {
     await Promise.all(pending.map(f => loadDate(f).catch(()=>{})));
     setStatus('ok', allData.length + ' instrumentos cargados');
   }
-
+ 
   const series = fechas
     .map(f => {
       const list = historico[f] || [];
@@ -378,10 +373,10 @@ async function openChart(ticker, nombre) {
       return item ? { fecha: f, cierre: item.cierre, variacion: item.variacion } : null;
     })
     .filter(Boolean);
-
+ 
   document.getElementById('modal-title').textContent = ticker + ' — ' + nombre;
   document.getElementById('modal-sub').textContent = series.length + ' días de datos históricos';
-
+ 
   if (chartInst) { chartInst.destroy(); chartInst = null; }
   const ctx = document.getElementById('modal-chart').getContext('2d');
   chartInst = new Chart(ctx, {
@@ -409,7 +404,7 @@ async function openChart(ticker, nombre) {
       }
     }
   });
-
+ 
   // mini stats
   const prices = series.map(s => s.cierre);
   const min = Math.min(...prices), max = Math.max(...prices), last = prices[prices.length-1];
@@ -420,16 +415,16 @@ async function openChart(ticker, nombre) {
     ['Máximo', '$ ' + max.toLocaleString('es-AR',{minimumFractionDigits:2})],
     ['Retorno período', (retorno > 0 ? '+' : '') + retorno + '%'],
   ].map(([l,v]) => `<div class="stat-card"><div class="stat-label">${l}</div><div class="stat-value" style="font-size:16px;">${v}</div></div>`).join('');
-
+ 
   document.getElementById('modal').classList.add('open');
 }
-
+ 
 function closeModal(e) {
   if (!e || e.target === document.getElementById('modal')) {
     document.getElementById('modal').classList.remove('open');
   }
 }
-
+ 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function setStatus(state, msg) {
   const dot = document.getElementById('dot');
@@ -449,7 +444,7 @@ function fmtVol(n) {
   return n.toLocaleString('es-AR');
 }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
+ 
 init();
 </script>
 </body>
