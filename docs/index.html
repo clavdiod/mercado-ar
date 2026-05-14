@@ -227,7 +227,7 @@ let chartInst = null;
 async function init() {
   setStatus('loading','Cargando índice de fechas...');
   try {
-    const res = await fetch('data/resumen.json?t=' + Date.now());
+    const res = await fetch('../data/resumen.json?t=' + Date.now());
     if (!res.ok) throw new Error('resumen.json no encontrado');
     const resumen = await res.json();
     fechas = resumen.fechas || [];
