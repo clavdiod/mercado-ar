@@ -176,10 +176,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-Listo
-Commit changes → Commit changes
-Actions → Fetch precios diarios → Run workflow → Run workflow
-El cambio clave es la línea SSL_CTX.verify_mode = ssl.CERT_NONE que desactiva la verificación de certificados — eso es lo que estaba bloqueando todas las llamadas a BYMA. Mandame foto del resultado.
-
-
-
