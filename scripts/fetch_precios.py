@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 fetch_precios.py - Mercado Argentino
-Fuente: Ambito Financiero (mercados.ambito.com) - API pública sin auth
+Guarda datos en docs/data/ para que GitHub Pages los pueda servir
 """
 
 import json, time, logging, ssl, urllib.request
@@ -11,8 +11,9 @@ from pathlib import Path
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
-DATA_DIR     = Path(__file__).parent.parent / "data" / "historico"
-SUMMARY_FILE = Path(__file__).parent.parent / "data" / "resumen.json"
+# ← Guardamos dentro de docs/ para que GitHub Pages lo sirva
+DATA_DIR     = Path(__file__).parent.parent / "docs" / "data" / "historico"
+SUMMARY_FILE = Path(__file__).parent.parent / "docs" / "data" / "resumen.json"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 SSL_CTX = ssl.create_default_context()
@@ -150,7 +151,7 @@ def main():
                "total_fechas": len(fechas), "actualizado_en": datetime.now().isoformat()+"Z"}
     with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
         json.dump(resumen, f, ensure_ascii=False, separators=(",",":"))
-    log.info(f"Listo. {len(todos)} instrumentos · {len(fechas)} fechas en historico")
+    log.info(f"Listo. {len(todos)} instrumentos · {len(fechas)} fechas")
 
 if __name__ == "__main__":
     main()
