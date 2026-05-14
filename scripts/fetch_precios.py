@@ -1,173 +1,139 @@
+bash
+
+cat /home/claude/mercado-ar/scripts/fetch_precios.py
+Salida
+
 #!/usr/bin/env python3
 """
-fetch_precios.py
-Descarga precios de cierre del mercado argentino y los guarda en data/historico/
-Fuentes: Bolsar API (acciones, cedears, bonos, ON, letras) + CAFCI (FCI)
+fetch_precios.py - Mercado Argentino
+Usa BYMA Data (open.bymadata.com.ar) como fuente principal + CAFCI para FCI.
 """
 
-import json
-import os
-import sys
-import time
-import logging
+import json, time, logging, urllib.request, urllib.error
 from datetime import datetime, date, timedelta
 from pathlib import Path
-import urllib.request
-import urllib.error
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
-DATA_DIR = Path(__file__).parent.parent / "data" / "historico"
+DATA_DIR     = Path(__file__).parent.parent / "data" / "historico"
 SUMMARY_FILE = Path(__file__).parent.parent / "data" / "resumen.json"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; MercadoAR/1.0)",
-    "Accept": "application/json",
+    "User-Agent":      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
+    "Accept":          "application/json, text/plain, */*",
+    "Accept-Language": "es-AR,es;q=0.9",
+    "Referer":         "https://open.bymadata.com.ar/",
+    "Origin":          "https://open.bymadata.com.ar",
 }
 
-BOLSAR_ENDPOINTS = {
-    "acciones": "https://api.bolsar.info/mercado/acciones/panel/general",
-    "cedears":  "https://api.bolsar.info/mercado/cedears/panel/general",
-    "bonos":    "https://api.bolsar.info/mercado/bonos/panel/bonos-soberanos-en-pesos",
-    "on":       "https://api.bolsar.info/mercado/obligaciones-negociables/panel/general",
-    "letras":   "https://api.bolsar.info/mercado/letras/panel/general",
-}
-
-CAFCI_URL = "https://api.cafci.org.ar/fondo?estado=1"
-
-
-def fetch_json(url, retries=3, delay=5):
+def fetch_json(url, retries=3, delay=8):
     for attempt in range(retries):
         try:
             req = urllib.request.Request(url, headers=HEADERS)
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                return json.loads(resp.read().decode("utf-8"))
+            with urllib.request.urlopen(req, timeout=30) as r:
+                return json.loads(r.read().decode("utf-8"))
         except Exception as e:
-            log.warning(f"Intento {attempt+1}/{retries} fallido para {url}: {e}")
+            log.warning(f"  intento {attempt+1}/{retries} fallido ({e})")
             if attempt < retries - 1:
                 time.sleep(delay)
     return None
 
+BYMA_URLS = {
+    "acciones": "https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/equities",
+    "cedears":  "https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/cedears",
+    "bonos":    "https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/bonds",
+    "letras":   "https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/lebacs",
+    "on":       "https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free/corporate-bonds",
+}
+CAFCI_URL = "https://api.cafci.org.ar/fondo?estado=1"
 
-def parse_bolsar(data, categoria):
-    items = data if isinstance(data, list) else data.get("data", data.get("items", []))
-    result = []
-    for item in items:
-        ticker  = item.get("simbolo") or item.get("ticker") or item.get("symbol") or ""
-        nombre  = item.get("descripcion") or item.get("nombre") or item.get("name") or ticker
-        cierre  = item.get("ultimoPrecio") or item.get("ultimo") or item.get("close") or item.get("precioUltimo")
-        var     = item.get("variacion") or item.get("variacionPorcentual") or item.get("changePercent")
-        volumen = item.get("volumen") or item.get("volume") or item.get("cantidadNominal")
+def clean(v):
+    try:    return float(str(v).replace(",",".").strip())
+    except: return None
 
-        if cierre is None:
-            continue
-        try:
-            cierre = float(cierre)
-        except (ValueError, TypeError):
-            continue
-
-        result.append({
-            "ticker":    ticker.upper(),
-            "nombre":    nombre,
-            "categoria": categoria,
-            "cierre":    round(cierre, 4),
-            "variacion": round(float(var), 4) if var is not None else None,
-            "volumen":   float(volumen) if volumen is not None else None,
-        })
-    return result
-
+def parse_byma(data, cat):
+    if not data: return []
+    rows = data if isinstance(data, list) else data.get("data", data.get("content", []))
+    out  = []
+    for item in (rows or []):
+        ticker = (item.get("symbol") or item.get("descripcionAbreviada") or "").strip().upper()
+        nombre = (item.get("description") or item.get("descripcion") or ticker).strip()
+        cierre = clean(item.get("trade") or item.get("settlementPrice") or item.get("closingPrice") or item.get("last") or item.get("price"))
+        var    = clean(item.get("changePercent") or item.get("imVar") or item.get("variation"))
+        vol    = clean(item.get("volume") or item.get("totalNominalVolume") or item.get("quantityBuy"))
+        if not ticker or cierre is None: continue
+        out.append({"ticker": ticker, "nombre": nombre, "categoria": cat,
+                    "cierre": round(cierre,4),
+                    "variacion": round(var,4) if var is not None else None,
+                    "volumen": vol})
+    return out
 
 def parse_cafci(data):
-    fondos = data.get("data", data) if isinstance(data, dict) else data
-    result = []
-    for f in fondos:
-        nombre = f.get("nombre") or f.get("name") or ""
-        fid    = str(f.get("id") or "")
-        cuota  = f.get("ultimoCuotaparte") or f.get("cuotaparte")
-        var    = f.get("variacion")
-        patrim = f.get("patrimonio")
+    if not data: return []
+    rows = data.get("data", data) if isinstance(data, dict) else data
+    out  = []
+    for f in (rows or []):
+        cuota = clean(f.get("ultimoCuotaparte") or f.get("cuotaparte"))
+        if cuota is None: continue
+        out.append({"ticker": str(f.get("id","")),
+                    "nombre": (f.get("nombre") or f.get("name") or "").strip(),
+                    "categoria": "fci",
+                    "cierre": round(cuota,6),
+                    "variacion": clean(f.get("variacion")),
+                    "volumen": clean(f.get("patrimonio"))})
+    return out
 
-        if cuota is None:
-            continue
-        try:
-            cuota = float(cuota)
-        except (ValueError, TypeError):
-            continue
-
-        result.append({
-            "ticker":    fid,
-            "nombre":    nombre,
-            "categoria": "fci",
-            "cierre":    round(cuota, 6),
-            "variacion": round(float(var), 4) if var is not None else None,
-            "volumen":   float(patrim) if patrim is not None else None,
-        })
-    return result
-
-
-def last_business_day():
+def last_bday():
     d = date.today() - timedelta(days=1)
-    while d.weekday() >= 5:  # sab=5, dom=6
-        d -= timedelta(days=1)
+    while d.weekday() >= 5: d -= timedelta(days=1)
     return d
 
-
 def main():
-    target_date = last_business_day()
-    date_str = target_date.isoformat()   # "2025-05-13"
+    date_str = last_bday().isoformat()
     out_file = DATA_DIR / f"{date_str}.json"
+    log.info(f"=== Fetch mercado AR · {date_str} ===")
+    todos = []
 
-    # Evitar re-fetch si ya existe
-    if out_file.exists():
-        log.info(f"Ya existe {out_file}, saltando fetch.")
-    else:
-        log.info(f"Descargando precios para {date_str}...")
-        todos = []
+    for cat, url in BYMA_URLS.items():
+        log.info(f"→ {cat} ...")
+        raw   = fetch_json(url)
+        items = parse_byma(raw, cat)
+        log.info(f"  {'✓' if items else '✗'} {len(items)} instrumentos")
+        todos.extend(items)
+        time.sleep(3)
 
-        for cat, url in BOLSAR_ENDPOINTS.items():
-            log.info(f"  → {cat} ...")
-            raw = fetch_json(url)
-            if raw is None:
-                log.warning(f"  ✗ Sin datos para {cat}")
-                continue
-            items = parse_bolsar(raw, cat)
-            log.info(f"  ✓ {len(items)} instrumentos en {cat}")
-            todos.extend(items)
+    log.info("→ fci (CAFCI)...")
+    raw   = fetch_json(CAFCI_URL)
+    items = parse_cafci(raw)
+    log.info(f"  {'✓' if items else '✗'} {len(items)} fondos")
+    todos.extend(items)
 
-        log.info("  → fci ...")
-        raw_fci = fetch_json(CAFCI_URL)
-        if raw_fci:
-            fci_items = parse_cafci(raw_fci)
-            log.info(f"  ✓ {len(fci_items)} fondos en fci")
-            todos.extend(fci_items)
-        else:
-            log.warning("  ✗ Sin datos FCI")
+    # deduplicar
+    seen, uniq = set(), []
+    for i in todos:
+        k = (i["ticker"], i["categoria"])
+        if k not in seen: seen.add(k); uniq.append(i)
+    todos = uniq
 
-        payload = {
-            "fecha":        date_str,
-            "generado_en":  datetime.utcnow().isoformat() + "Z",
-            "total":        len(todos),
-            "instrumentos": todos,
-        }
+    log.info(f"=== Total: {len(todos)} instrumentos ===")
+    payload = {"fecha": date_str, "generado_en": datetime.utcnow().isoformat()+"Z",
+               "total": len(todos), "instrumentos": todos}
+    with open(out_file, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, separators=(",",":"))
+    log.info(f"Guardado → {out_file}")
 
-        with open(out_file, "w", encoding="utf-8") as f:
-            json.dump(payload, f, ensure_ascii=False, separators=(",", ":"))
-        log.info(f"Guardado: {out_file} ({len(todos)} instrumentos)")
-
-    # Actualizar resumen (índice de fechas disponibles)
-    fechas = sorted([p.stem for p in DATA_DIR.glob("*.json")])
-    resumen = {
-        "ultima_fecha":    fechas[-1] if fechas else None,
-        "fechas":          fechas,
-        "total_fechas":    len(fechas),
-        "actualizado_en":  datetime.utcnow().isoformat() + "Z",
-    }
+    fechas = sorted(p.stem for p in DATA_DIR.glob("*.json"))
+    resumen = {"ultima_fecha": fechas[-1] if fechas else None, "fechas": fechas,
+               "total_fechas": len(fechas), "actualizado_en": datetime.utcnow().isoformat()+"Z"}
     with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
-        json.dump(resumen, f, ensure_ascii=False, separators=(",", ":"))
-    log.info(f"Resumen actualizado: {len(fechas)} fechas disponibles")
+        json.dump(resumen, f, ensure_ascii=False, separators=(",",":"))
+    log.info(f"Resumen actualizado: {len(fechas)} fechas")
 
+    if not todos:
+        log.error("Sin datos de ninguna fuente — revisar APIs")
+        raise SystemExit(1)
 
 if __name__ == "__main__":
     main()
