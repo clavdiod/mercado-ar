@@ -1,3 +1,8 @@
+bash
+
+cat /home/claude/mercado-ar/docs/index.html
+Salida
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -255,7 +260,7 @@ async function loadDate(dateStr) {
   if (historico[dateStr]) { useData(dateStr); return; }
   setStatus('loading', 'Cargando ' + formatDate(dateStr) + '...');
   try {
-    const res = await fetch('data/historico/' + dateStr + '.json?t=' + Date.now());
+    const res = await fetch('../data/historico/' + dateStr + '.json?t=' + Date.now());
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const json = await res.json();
     historico[dateStr] = json.instrumentos || [];
