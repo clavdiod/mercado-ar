@@ -1,0 +1,39 @@
+name: Fetch precios diarios
+
+on:
+  schedule:
+    # ART = UTC-3, entonces: 8:00 ART = 11:00 UTC / 9:30 ART = 12:30 UTC / 10:00 ART = 13:00 UTC
+    - cron: "0 11 * * 1-5"    # 8:00 AM Argentina
+    - cron: "30 12 * * 1-5"   # 9:30 AM Argentina
+    - cron: "0 13 * * 1-5"    # 10:00 AM Argentina
+  workflow_dispatch:   # permite correr manualmente desde la UI de GitHub
+
+permissions:
+  contents: write      # necesario para hacer commit de los datos
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: pip install requests --quiet
+
+      - name: Ejecutar fetch de precios
+        run: python scripts/fetch_precios.py
+
+      - name: Commit y push de datos
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          # Solo commitea si hay cambios reales
+          git diff --cached --quiet || git commit -m "datos: precios $(date -u +%Y-%m-%d)"
+          git push
