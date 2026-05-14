@@ -1,8 +1,3 @@
-bash
-
-cat /home/claude/mercado-ar/scripts/fetch_precios.py
-Salida
-
 #!/usr/bin/env python3
 """
 fetch_precios.py - Mercado Argentino
