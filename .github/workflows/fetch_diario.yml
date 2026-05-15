@@ -1,3 +1,35 @@
+name: Check TC BNA
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/1 15-23 * * *"
+
+permissions:
+  contents: write  # 🔑 esto le da permiso al robot para subir archivos
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+      - name: Run script
+        run: |
+          python scripts/check_tc.py || echo "Error en ejecución, continuar..."
+      - name: Save historico
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add data/*
+          git commit -m "Update historico"
+          git push
+
 name: Fetch precios diarios
 
 on:
